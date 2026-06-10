@@ -5,6 +5,7 @@ from projects.models import Project
 from .models import Place
 from .serializers import PlaceSerializer
 from .services import fetch_artwork
+from projects.services import update_project_status
 
 
 class AddPlaceAPIView(APIView):
@@ -30,6 +31,8 @@ class AddPlaceAPIView(APIView):
             title=data.get("title")
         )
 
+        update_project_status(project)
+
         return Response(PlaceSerializer(place).data, status=201)
 
 class UpdatePlaceAPIView(APIView):
@@ -45,7 +48,9 @@ class UpdatePlaceAPIView(APIView):
 
         place.save()
 
-        return Response(PlaceSerializer(place).data)
+        update_project_status(place.project)
+
+        return Response(PlaceSerializer(place).data
 
 class RetrievePlaceAPIView(APIView):
 
